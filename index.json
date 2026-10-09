@@ -1,1 +1,10 @@
-{ "version": 1, "logos": {} }
+{
+  "version": 1,
+  "logos": {
+    "1292964044": {
+      "file": "logos/1292964044.png",
+      "width": 941,
+      "height": 623
+    }
+  }
+}

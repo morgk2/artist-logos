@@ -33,14 +33,27 @@ for (const file of fs.readdirSync(LOGO_DIR).sort()) {
   logos[m[1]] = { file: `logos/${file}`, width, height };
 }
 
+// aliases.json maps extra Apple artist IDs (duplicate profiles) to a logo's primary ID.
+const aliases = {};
+const ALIASES_PATH = path.join(__dirname, '..', 'aliases.json');
+if (fs.existsSync(ALIASES_PATH)) {
+  const raw = JSON.parse(fs.readFileSync(ALIASES_PATH, 'utf8'));
+  for (const [alias, target] of Object.entries(raw)) {
+    if (!/^\d+$/.test(alias)) errors.push(`aliases.json: "${alias}" is not a numeric ID`);
+    else if (!logos[target]) errors.push(`aliases.json: "${alias}" points to ${target}, which has no logo`);
+    else if (logos[alias]) errors.push(`aliases.json: "${alias}" already has its own logo`);
+    else aliases[alias] = String(target);
+  }
+}
+
 if (errors.length) {
   console.error(errors.join('\n'));
   process.exit(1);
 }
 
-const out = JSON.stringify({ version: 1, logos }, null, 2) + '\n';
+const out = JSON.stringify({ version: 1, logos, aliases }, null, 2) + '\n';
 if (process.argv.includes('--check')) {
-  console.log(`OK: ${Object.keys(logos).length} logos`);
+  console.log(`OK: ${Object.keys(logos).length} logos, ${Object.keys(aliases).length} aliases`);
 } else {
   fs.writeFileSync(INDEX_PATH, out);
   console.log(`Wrote index.json with ${Object.keys(logos).length} logos`);

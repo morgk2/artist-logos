@@ -21,3 +21,11 @@ Logos are served straight from this repo. The app downloads `index.json`, looks 
 - Only submit logos you made or that are freely usable. No stolen or watermarked images.
 
 Check locally with `node scripts/build-index.js --check`.
+
+### Artists with more than one Apple Music profile
+
+Some artists have duplicate Apple Music profiles with different IDs. Keep one logo file and point the other IDs at it in `aliases.json`:
+
+```json
+{ "1467520896": "1004130511" }
+```
